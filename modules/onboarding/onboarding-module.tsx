@@ -1,28 +1,18 @@
 import { ONBOARDING_SCREEN } from '@/const/onboarding';
-import { useCallback, useRef, useState } from 'react';
-import {
-	Animated,
-	FlatList,
-	View,
-	type ViewToken,
-} from 'react-native';
+import { useRef, useState } from 'react';
+import { Animated, FlatList, View } from 'react-native';
+import PaginatorOnboarding from './paginator';
 import SlideViewOnboarding from './slide';
 
 const OnboardingModule = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const scrollX = useRef(new Animated.Value(0)).current;
-	const viewableItemChange = useCallback(
-		({ viewableItems }: { viewableItems: ViewToken[] }) => {
-			setCurrentIndex(viewableItems[0].index as number);
-		},
-		[],
-	);
+
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<FlatList
 				showsHorizontalScrollIndicator={false}
 				horizontal
-				snapToAlignment="start"
 				pagingEnabled
 				bounces={false}
 				snapToStart
@@ -35,10 +25,13 @@ const OnboardingModule = () => {
 					[{ nativeEvent: { contentOffset: { x: scrollX } } }],
 					{ useNativeDriver: false },
 				)}
-				onViewableItemsChanged={viewableItemChange}
+				onViewableItemsChanged={({ viewableItems }) => {
+					setCurrentIndex(viewableItems[0].index as number);
+				}}
 				viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
 				scrollEventThrottle={32}
 			/>
+			<PaginatorOnboarding scrollX={scrollX} items={ONBOARDING_SCREEN} />
 		</View>
 	);
 };
