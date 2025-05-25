@@ -5,8 +5,9 @@ import { PaginatorOnboardingStyle } from './index.style';
 export default function PaginatorOnboarding(prop: {
 	items: { title: string }[];
 	scrollX: Animated.Value;
+	scrollTo: (index: number) => void;
 }) {
-	const { items, scrollX } = prop;
+	const { items, scrollX, scrollTo } = prop;
 	const { container, baseDote } = PaginatorOnboardingStyle();
 	const { width } = useWindowDimensions();
 	return (
@@ -26,8 +27,9 @@ export default function PaginatorOnboarding(prop: {
 				});
 				return (
 					<Animated.View
-						style={[baseDote, { width: doWidth, opacity: doOpacity }]}
+						onTouchEnd={() => scrollTo(i)}
 						key={i.toString()}
+						style={[baseDote, { width: doWidth, opacity: doOpacity }]}
 					/>
 				);
 			})}
